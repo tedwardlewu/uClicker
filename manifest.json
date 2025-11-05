@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Study Helper", 
+  "version": "1.0",
+  "description": "Helps with online learning activities",
+  "permissions": ["activeTab", "storage"],
+  "action": {
+    "default_popup": "clicker.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://student.iclicker.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

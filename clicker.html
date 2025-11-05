@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>iClicker Random AutoClicker</title>
+  <link rel="stylesheet" href="clicker.css">
+</head>
+<body>
+  <div class="header">
+    <h2>🎯 iClicker AutoClicker</h2>
+    <div class="connection-status" id="connectionStatus">●</div>
+  </div>
+
+  <div class="control-panel">
+    <div class="toggle-section">
+      <span class="toggle-label">AutoClicker</span>
+      <label class="switch">
+        <input type="checkbox" id="toggleAuto" checked>
+        <span class="slider"></span>
+      </label>
+      <span id="statusText" class="status-enabled">ON</span>
+    </div>
+  </div>
+
+  <div class="status-panel">
+    <div class="status-header">
+      <span>Live Status</span>
+      <span class="last-update" id="lastUpdate">updating...</span>
+    </div>
+    
+    <div class="status-grid">
+      <div class="status-card" id="pollCard">
+        <div class="status-icon">📊</div>
+        <div class="status-info">
+          <div class="status-title">Poll Detection</div>
+          <div class="status-value" id="pollStatus">Searching...</div>
+        </div>
+      </div>
+      
+      <div class="status-card" id="buttonsCard">
+        <div class="status-icon">🔘</div>
+        <div class="status-info">
+          <div class="status-title">Buttons Found</div>
+          <div class="status-value" id="buttonStatus">0</div>
+        </div>
+      </div>
+      
+      <div class="status-card" id="actionCard">
+        <div class="status-icon">⚡</div>
+        <div class="status-info">
+          <div class="status-title">Last Action</div>
+          <div class="status-value" id="actionStatus">Ready</div>
+        </div>
+      </div>
+      
+      <div class="status-card" id="activityCard">
+        <div class="status-icon">🕒</div>
+        <div class="status-info">
+          <div class="status-title">Activity</div>
+          <div class="status-value" id="activityStatus">Waiting</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-log">
+    <div class="log-header">Recent Activity</div>
+    <div class="log-content" id="activityLog">
+      <div class="log-entry">Extension loaded</div>
+    </div>
+  </div>
+
+  <script src="clicker.js"></script>
+</body>
+</html>
