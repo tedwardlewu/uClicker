@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
         connectionStatus: document.getElementById("connectionStatus"),
         lastUpdate: document.getElementById("lastUpdate"),
         pollStatus: document.getElementById("pollStatus"),
-        buttonStatus: document.getElementById("buttonStatus"),
-        actionStatus: document.getElementById("actionStatus"),
         activityStatus: document.getElementById("activityStatus"),
         activityLog: document.getElementById("activityLog")
     };
@@ -14,35 +12,36 @@ document.addEventListener('DOMContentLoaded', function() {
     let updateInterval;
     let isOnIclickerPage = false;
 
-    // Load saved state
-    chrome.storage.local.get(['autoClickEnabled'], (result) => {
-        const enabled = result.autoClickEnabled !== false;
+  
+    chrome.storage.local.get(['alertEnabled'], (result) => {
+        const enabled = result.alertEnabled !== false;
         elements.toggle.checked = enabled;
-        updateToggleDisplay(enabled);
+        upDate(enabled);
         checkCurrentTab();
     });
 
     elements.toggle.addEventListener("change", () => {
         const enabled = elements.toggle.checked;
-        updateToggleDisplay(enabled);
-        addLogEntry(`AutoClicker ${enabled ? 'enabled' : 'disabled'}`);
+        upDate(enabled);
+        addLogEntry(`Alert system ${enabled ? 'enabled' : 'disabled'}`);
 
-        chrome.storage.local.set({ autoClickEnabled: enabled });
+        chrome.storage.local.set({ alertEnabled: enabled });
 
         if (isOnIclickerPage) {
-            sendMessageToContentScript({action: "toggle", enabled: enabled})
+            message({action: "toggle", enabled: enabled})
                 .then(() => addLogEntry("Settings updated", "success"))
                 .catch(error => addLogEntry(`Failed to update: ${error}`, "error"));
         }
     });
 
-    function updateToggleDisplay(enabled) {
+    function upDate(enabled) {
         elements.statusText.textContent = enabled ? "ON" : "OFF";
         elements.statusText.className = enabled ? "status-enabled" : "status-disabled";
     }
 
     function checkCurrentTab() {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+
             if (tabs.length === 0) {
                 showErrorMessage("No active tab found");
                 return;
@@ -51,10 +50,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentTab = tabs[0];
             isOnIclickerPage = currentTab.url.includes('student.iclicker.com');
             
-            if (isOnIclickerPage) {
+            if (isOnIclickerPage) 
+                {
                 addLogEntry("Connected to iClicker page", "success");
                 startLiveUpdates();
-            } else {
+            } 
+            
+            else {
                 showErrorMessage("Please navigate to student.iclicker.com");
             }
         });
@@ -70,12 +72,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!isOnIclickerPage) return;
 
-        sendMessageToContentScript({action: "getStatus"})
+        message({action: "getStatus"})
             .then(status => {
                 setConnectedState(status);
                 elements.connectionStatus.className = "connection-status";
                 elements.connectionStatus.title = "Connected to iClicker";
             })
+
             .catch(error => {
                 setDisconnectedState(error);
                 elements.connectionStatus.className = "connection-status disconnected";
@@ -83,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    function sendMessageToContentScript(message) {
+    function message(message) {
         return new Promise((resolve, reject) => {
             chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
                 if (tabs.length === 0) {
@@ -94,9 +97,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
                     if (chrome.runtime.lastError) {
                         reject("Content script not ready");
-                    } else if (response) {
+                    } 
+                    
+                    else if (response) {
                         resolve(response);
-                    } else {
+                    } 
+                    
+                    else {
                         reject("No response");
                     }
                 });
@@ -105,41 +112,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function setConnectedState(status) {
-        elements.pollStatus.textContent = status.pollActive ? "Active Poll 🎯" : "No Poll";
-        elements.buttonStatus.textContent = `${status.buttonsFound}/5`;
-        elements.actionStatus.textContent = status.lastAction || "Ready";
+        elements.pollStatus.textContent = status.pollActive ? "ACTIVE POLL" : "No Active Poll";
+        elements.activityStatus.textContent = status.pollActive ? "ALERT: Answer Required!" : "Monitoring...";
         
-        // Update card states
         updateCardState('pollCard', status.pollActive);
-        updateCardState('buttonsCard', status.buttonsFound > 0);
-        updateCardState('actionCard', !status.lastAction.includes('Error'));
+        updateCardState('activityCard', status.pollActive);
         
-        if (status.pollActive && status.buttonsFound > 0) {
-            elements.activityStatus.textContent = "Ready to Click!";
-            updateCardState('activityCard', true);
-        } else {
-            elements.activityStatus.textContent = "Waiting...";
-            updateCardState('activityCard', false);
+      
+        if (status.pollActive && !status.wasActive) {
+            sendDesktopNotification("iClicker Alert", "A poll is active - answer now!");
+            addLogEntry("Poll detected - sending alert", "warning");
         }
     }
 
     function updateCardState(cardId, isActive) {
         const card = document.getElementById(cardId);
         if (card) {
-            card.className = `status-card ${isActive ? 'active' : 'inactive'}`;
+            card.className = `status-card ${isActive ? 'active-alert' : 'inactive'}`;
         }
     }
 
     function setDisconnectedState(error) {
         elements.pollStatus.textContent = "Disconnected";
-        elements.buttonStatus.textContent = "0";
-        elements.actionStatus.textContent = error;
         elements.activityStatus.textContent = "Offline";
         
-        // Set all cards to inactive
-        ['pollCard', 'buttonsCard', 'actionCard', 'activityCard'].forEach(cardId => {
+        ['pollCard', 'activityCard'].forEach(cardId => {
             updateCardState(cardId, false);
         });
+    }
+
+    function sendDesktopNotification(title, message) {
+        if (Notification.permission === "granted") {
+            new Notification(title, { body: message, icon: "icon.png" });
+        } 
+        
+        else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+
+                if (permission === "granted") {
+                    new Notification(title, { body: message, icon: "icon.png" });
+                }
+            });
+        }
     }
 
     function showErrorMessage(message) {
@@ -155,8 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         elements.activityLog.appendChild(entry);
         
-        // Keep only last 6 entries
+        
         const entries = elements.activityLog.getElementsByClassName('log-entry');
+        
         if (entries.length > 6) {
             entries[0].remove();
         }
@@ -164,10 +179,15 @@ document.addEventListener('DOMContentLoaded', function() {
         elements.activityLog.scrollTop = elements.activityLog.scrollHeight;
     }
 
-    // Add initial log entry
-    addLogEntry("Popup opened", "success");
+    
+    if ("Notification" in window) {
+        Notification.requestPermission();
+    }
 
-    // Clean up
+  
+    addLogEntry("Alert system started", "success");
+
+   
     window.addEventListener('unload', () => {
         if (updateInterval) clearInterval(updateInterval);
     });

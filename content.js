@@ -1,11 +1,10 @@
-// content.js - iClicker AutoClicker
-console.log("🎯 iClicker AutoClicker CONTENT SCRIPT LOADED!");
+
+console.log("iClicker AutoClicker CONTENT SCRIPT LOADED!");
 
 let autoClickEnabled = true;
 let lastPollDetected = false;
 let lastAction = "Content script loaded successfully";
 
-// Listen for messages from popup IMMEDIATELY
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("📨 Received message in content script:", message);
     
@@ -18,12 +17,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     else if (message.action === "getStatus") {
         const status = getCurrentStatus();
-        console.log("📊 Sending status:", status);
+        console.log("Sending status:", status);
         sendResponse(status);
         return true;
     }
+
     else if (message.action === "ping") {
-        console.log("🏓 Pong! Content script is alive");
+        console.log("Content script is alive");
         sendResponse({alive: true, message: "Content script is running"});
         return true;
     }
@@ -31,13 +31,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
 });
 
-// Simple poll detection
+
 function isPollActive() {
     const pageText = document.body.innerText || '';
     return pageText.includes('Multiple Choice') && /Question\s+\d+/.test(pageText);
 }
 
-// Simple button detection
+
 function findClickerOptions() {
     const options = [];
     const letters = ['a', 'b', 'c', 'd', 'e'];
@@ -51,7 +51,7 @@ function findClickerOptions() {
     return options;
 }
 
-// Main polling function
+
 function checkAndClickPoll() {
     if (!autoClickEnabled) return;
 
@@ -60,6 +60,7 @@ function checkAndClickPoll() {
         const options = findClickerOptions();
         
         if (!pollActive || options.length === 0) {
+
             if (lastPollDetected) {
                 lastAction = "Poll ended";
                 lastPollDetected = false;
@@ -72,7 +73,7 @@ function checkAndClickPoll() {
             const randomOption = options[Math.floor(Math.random() * options.length)];
             const optionText = randomOption.textContent.trim();
             
-            console.log("🎯 Clicking:", optionText);
+            console.log("Clicking:", optionText);
             
             setTimeout(() => {
                 randomOption.click();
@@ -82,7 +83,9 @@ function checkAndClickPoll() {
 
             lastPollDetected = true;
         }
-    } catch (err) {
+    } 
+    
+    catch (err) {
         lastAction = "Error: " + err.message;
         console.error("❌", err);
     }
@@ -102,8 +105,8 @@ function getCurrentStatus() {
     };
 }
 
-// Start checking for polls
-console.log("⏰ Starting poll checker...");
+
+console.log("Starting poll checker...");
 setInterval(checkAndClickPoll, 2000);
 
 // Test function
@@ -116,4 +119,4 @@ window.debugAutoClicker = function() {
     console.log("=============");
 };
 
-console.log("✅ iClicker AutoClicker ready! Type 'debugAutoClicker()' in console.");
+console.log("iClicker AutoClicker ready! Type 'debugAutoClicker()' in console.");
