@@ -1,12 +1,24 @@
-Description:
-uClicker is a browser-based automation tool designed to enhance classroom engagement by automatically interacting with web-based polling interfaces. 
-The tool detects when a poll is active and notifies the user, helping students respond promptly while reducing cognitive load from constantly monitoring online polls.
+Automated iClicker Helper Tool
 
-Key Features: 
+***Disclaimer: This tool is not intended to cheat, automate responses, or violate any academic integrity policies. Its sole purpose is to help students stay aware of active polls and focus on their classes, while providing a learning opportunity for me to understand basic web interactions and automation.
 
-- Active poll detection: Monitors the DOM and network activity to identify when a classroom poll is live.
+Overview:
 
-- Automatic interaction: Streamlines repetitive web interactions, saving time and reducing distractions.
+This project is an automated iClicker helper tool designed to:
 
-- User notifications: Alert the user when a poll is active so they can respond efficiently without constant monitoring
+Scan the iClicker web interface for active polls.
 
+Notify the user immediately when a poll is detected.
+
+Serve as a learning exercise for web automation and interaction techniques.
+
+*It does not submit answers automatically or interact with the poll in a way that could influence outcomes. The primary goal is to help students stay attentive and avoid missing polls due to distractions or multitasking.
+
+
+Features:
+
+Poll Detection: Automatically monitors the iClicker page for active polls.
+
+User Notification: Alerts users when a new poll is available.
+
+Safe Learning Tool: Designed as an educational project to learn about web automation, DOM interaction, and programming practices.
