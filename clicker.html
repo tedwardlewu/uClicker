@@ -1,74 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>iClicker Warning System</title>
-  <link rel="stylesheet" href="clicker.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iClicker Poll Detector</title>
+    <link rel="stylesheet" href="clicker.css">
 </head>
 <body>
-  <div class="header">
-    <h2>iClicker Warning</h2>
-    <div class="connection-status" id="connectionStatus">●</div>
-  </div>
-
-  <div class="control-panel">
-    <div class="toggle-section">
-      <span class="toggle-label">Helps student to focus and not miss iClicker questions</span>
-      <label class="switch">
-        <input type="checkbox" id="toggleAuto" checked>
-        <span class="slider"></span>
-      </label>
-      <span id="statusText" class="status-enabled">ON</span>
+    <div class="header">
+        <h2>📊 iClicker Poll Detector</h2>
+        <div class="connection-status" id="connectionStatus">●</div>
     </div>
-  </div>
 
-  <div class="status-panel">
-    <div class="status-header">
-      <span>Live Status</span>
-      <span class="last-update" id="lastUpdate">updating...</span>
+    <div class="info-banner">
+        <strong>ℹ️ How it works:</strong>
+        This extension detects when a new poll becomes available and notifies you with a visual alert and sound. You still need to manually select your answer.
     </div>
-    
-    <div class="status-grid">
-      <div class="status-card" id="pollCard">
-        <div class="status-icon">📊</div>
-        <div class="status-info">
-          <div class="status-title">Poll Detection</div>
-          <div class="status-value" id="pollStatus">Searching...</div>
-        </div>
-      </div>
-      
-      <div class="status-card" id="buttonsCard">
-        <div class="status-icon">🔘</div>
-        <div class="status-info">
-          <div class="status-title">Buttons Found</div>
-          <div class="status-value" id="buttonStatus">0</div>
-        </div>
-      </div>
-      
-      <div class="status-card" id="actionCard">
-        <div class="status-icon">⚡</div>
-        <div class="status-info">
-          <div class="status-title">Last Action</div>
-          <div class="status-value" id="actionStatus">Ready</div>
-        </div>
-      </div>
-      
-      <div class="status-card" id="activityCard">
-        <div class="status-icon">🕒</div>
-        <div class="status-info">
-          <div class="status-title">Activity</div>
-          <div class="status-value" id="activityStatus">Waiting</div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="activity-log">
-    <div class="log-header">Recent Activity</div>
-    <div class="log-content" id="activityLog">
-      <div class="log-entry">Extension loaded</div>
+    <div class="control-panel">
+        <div class="toggle-section">
+            <span class="toggle-label">Poll Detection</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleDetection" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div id="statusText" class="status-enabled">ENABLED</div>
     </div>
-  </div>
 
-  <script src="clicker.js"></script>
+    <div class="status-panel">
+        <div class="status-header">
+            <span>Current Status</span>
+            <span class="last-update" id="lastUpdate">Just now</span>
+        </div>
+        <div class="status-grid">
+            <div class="status-card" id="pollStatusCard">
+                <div class="status-icon">📋</div>
+                <div class="status-info">
+                    <div class="status-title">Poll Status</div>
+                    <div class="status-value" id="pollStatus">No active poll</div>
+                </div>
+            </div>
+            <div class="status-card" id="optionsCard">
+                <div class="status-icon">🔢</div>
+                <div class="status-info">
+                    <div class="status-title">Available Options</div>
+                    <div class="status-value" id="optionsCount">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="activity-log">
+        <div class="log-header">📝 Activity Log</div>
+        <div class="log-content" id="logContent">
+            <div class="log-entry">Extension loaded and ready</div>
+        </div>
+    </div>
+
+    <script src="clicker.js"></script>
 </body>
 </html>
