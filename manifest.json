@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "iClicker Poll Detector", 
+  "name": "Study Helper", 
   "version": "1.0",
-  "description": "Detects and notifies you when iClicker polls are available",
-  "permissions": ["activeTab", "storage", "notifications"],
-  "host_permissions": ["https://student.iclicker.com/*"],
+  "description": "Helps with online learning activities",
+  "permissions": ["activeTab", "storage"],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "clicker.html"
   },
   "content_scripts": [
     {
@@ -17,10 +16,5 @@
   ],
   "background": {
     "service_worker": "background.js"
-  },
-  "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
   }
 }
